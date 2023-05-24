@@ -1,143 +1,101 @@
+import 'package:bottom_navy_bar/bottom_navy_bar.dart'; //bei pubspec.yaml folgendes aus dem internet kopieren --> https://pub.dev/packages/bottom_navy_bar/install
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyHomePage());
 }
 
-class MyApp extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _currentIndex = 0;
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'My App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  final List<Widget> pages = [
-    PageOne(),
-    PageTwo(),
-    PageThree(),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PageOne()),
-                );
-              },
-              child: Text('Seite 1'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PageTwo()),
-                );
-              },
-              child: Text('Seite 2'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PageThree()),
-                );
-              },
-              child: Text('Seite 3'),
-            ),
-          ],
+      home: Scaffold(
+        appBar: AppBar(title: const Text("PH Maps")),
+        body: SizedBox.expand(
+          child: PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            children: [
+              Container(
+                color: Colors.white,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Hallo"),
+                      SizedBox(height: 16),
+                      Text("Hi"),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                color: Colors.red,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Hier klappts auch"),
+                      SizedBox(height: 16),
+                      Text("Juhu!"),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                color: Colors.blue,
+              ),
+              Container(
+                color: Colors.green,
+              ),
+            ],
+          ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        backgroundColor: Color.fromARGB(
-            255, 57, 228, 4), // Hintergrundfarbe der Navigationsleiste
-        selectedItemColor: Color.fromARGB(
-            255, 7, 142, 245), // Farbe für ausgewähltes Symbol und Text
-        unselectedItemColor: const Color.fromARGB(
-            255, 246, 3, 3), // Farbe für nicht ausgewählte Symbole und Texte
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.pageview),
-            label: 'Seite 1',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.pageview),
-            label: 'Seite 2',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.pageview),
-            label: 'Seite 3',
-          ),
-        ],
-        onTap: (index) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => pages[index]),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class PageOne extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Seite 1'),
-      ),
-      body: Center(
-        child: Text('Seite 1'),
-      ),
-    );
-  }
-}
-
-class PageTwo extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Seite 2'),
-      ),
-      body: Center(
-        child: Text('Seite 2'),
-      ),
-    );
-  }
-}
-
-class PageThree extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Seite 3'),
-      ),
-      body: Center(
-        child: Text('Seite 3'),
+        bottomNavigationBar: BottomNavyBar(
+            selectedIndex: _currentIndex,
+            onItemSelected: (index) {
+              setState(() {
+                _pageController.jumpToPage(index);
+              });
+            },
+            items: <BottomNavyBarItem>[
+              BottomNavyBarItem(title: Text("Menü"), icon: Icon(Icons.home)),
+              BottomNavyBarItem(
+                  title: Text("Navigation"),
+                  icon: Icon(Icons.assistant_direction,
+                      color: Color.fromARGB(255, 140, 208, 0))),
+              BottomNavyBarItem(
+                  title: Text("Pläne"), icon: Icon(Icons.map_outlined)),
+              BottomNavyBarItem(
+                  title: Text("Gespeichert"),
+                  icon: Icon(Icons.bookmarks_outlined)),
+            ]),
       ),
     );
   }
